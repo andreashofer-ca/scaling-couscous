@@ -1,0 +1,17 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Pending Screen > should match the snapshot 1`] = `
+<div>
+  <ui5-busy-indicator
+    active=""
+    class="full-width-busy-indicator"
+    delay="500"
+    desktop=""
+    size="L"
+    text="A description"
+    text-placement="Bottom"
+    title="Title"
+    ui5-busy-indicator=""
+  />
+</div>
+`;

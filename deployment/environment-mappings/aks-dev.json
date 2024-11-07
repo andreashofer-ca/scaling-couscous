@@ -1,0 +1,8 @@
+{
+  "keyvault_name": "starter-dev-vault",
+  "static_mapping": {
+    "AKS_CLUSTER_NAME": "starter-dev-cluster",
+    "AKS_RESOURCE_GROUP": "starter-dev-aks-cluster"
+  },
+  "vault_mapping": {}
+}

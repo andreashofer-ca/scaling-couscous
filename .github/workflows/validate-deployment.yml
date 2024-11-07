@@ -1,0 +1,25 @@
+name: Validate Deployment
+
+on:
+  push:
+    branches: ["**"]
+    paths: [deployment/**, .github/workflows/validate-deployment.yml]
+    tags-ignore: ["**"]
+
+jobs:
+  validate-templates-aks:
+    permissions:
+      id-token: write
+      contents: read
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/deploy-aks-validate.yml@v3.6.0
+    with:
+      docker-image-name: fioneer-starter/frontend
+    secrets: inherit
+  validate-templates-kyma:
+    permissions:
+      id-token: write
+      contents: read
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/deploy-kyma-validate.yml@v3.6.0
+    with:
+      docker-image-name: fioneer-starter/frontend
+    secrets: inherit

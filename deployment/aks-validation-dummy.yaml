@@ -1,0 +1,11 @@
+deployment:
+  image:
+    name: fioneer-starter-frontend:dummy
+
+service:
+  istioSettings:
+    exactCORSOrigin: https://web.example.com
+
+runtimeConfig:
+  fileContent:
+    baseUrl: https://api.example.com

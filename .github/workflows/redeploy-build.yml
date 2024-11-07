@@ -1,0 +1,63 @@
+name: Redeploy Existing Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      docker-image-name:
+        description: "The Docker image name to deploy"
+        required: true
+        type: string
+      deploy-aks:
+        description: "Whether or not to deploy to AKS"
+        required: false
+        type: boolean
+        default: true
+      deploy-kyma:
+        description: "Whether or not to deploy to Kyma"
+        required: false
+        type: boolean
+        default: true
+
+env:
+  MAVEN_REGISTRY_URL: ${{ secrets.MAVEN_REGISTRY_URL }}
+  ARTIFACTORY_USERNAME: ${{ secrets.ARTIFACTORY_WRITE_USERNAME }}
+  ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_WRITE_PASSWORD }}
+  CACHE_KEY: ${{ github.event.repository.name }}
+  DOCKER_REGISTRY_HOST: ${{ vars.DOCKER_REGISTRY_HOST }}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-to-aks:
+    if: ${{ inputs.deploy-aks }}
+    strategy:
+      matrix:
+        include:
+          - environment: aks-dev
+            branch:      main
+    concurrency: deploy-to-aks-${{ matrix.environment }}
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/deploy-aks.yml@v3.6.0
+    with:
+      docker-image-name: ${{ inputs.docker-image-name }}
+      environment: ${{ matrix.environment }}
+      branch: ${{ matrix.branch }}
+      create-db-binding: false
+    secrets: inherit
+
+  deploy-to-kyma:
+    if: ${{ inputs.deploy-kyma }}
+    strategy:
+      matrix:
+        include:
+          - environment: kyma-dev
+            branch:      main
+    concurrency: deploy-to-kyma-${{ matrix.environment }}
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/deploy-kyma.yml@v3.6.0
+    with:
+      docker-image-name: ${{ inputs.docker-image-name }}
+      environment: ${{ matrix.environment }}
+      branch: ${{ matrix.branch }}
+      create-db-binding: false
+    secrets: inherit

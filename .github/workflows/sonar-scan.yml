@@ -1,0 +1,15 @@
+# This workflow runs on a schedule or on demand to refresh the sonar report for the project that can be viewed
+# in the SonarCloud UI. This will run on the default branch (i.e., main).
+
+name: Sonar Report Refresh
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 9 * * 0-5'
+
+jobs:
+  sonar-scan:
+    if: github.ref != 'refs/heads/main'
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/node-sonar-scan.yml@v3.6.0
+    secrets: inherit

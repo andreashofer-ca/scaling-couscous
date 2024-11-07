@@ -1,0 +1,11 @@
+service:
+  istioSettings:
+    exactCORSOrigin: https://web.starter-dev.privatelink.westeurope.azmk8s.io
+volumes:
+  runtimeConfig:
+    fileContent:
+      baseUrl: https://api.starter-dev.privatelink.westeurope.azmk8s.io
+      oidc:
+        clientId: "fa63bd68-cf20-48e1-a0c1-61716f9aae06"
+        authority: "https://login.microsoftonline.com/f9aeb8ae-3ad2-4947-a6c0-f606f32f91bb/v2.0"
+        scope: "https://appfioneer.onmicrosoft.com/app-ep-sso/service_api openid profile offline_access"

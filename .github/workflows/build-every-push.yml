@@ -1,0 +1,94 @@
+name: Build every push
+
+on:
+  push:
+    branches: [ "**" ]
+    tags-ignore: [ "**" ]
+    paths-ignore:
+      - "README.md"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  lint-dockerfile:
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/docker-lint.yml@v3.6.0
+    secrets: inherit
+
+  lint-code:
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/node-lint.yml@v3.6.0
+    secrets: inherit
+
+  test:
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/node-test.yml@v3.6.0
+    secrets: inherit
+
+  build-docker-image:
+    needs:
+      - lint-dockerfile
+      - lint-code
+      - test
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/node-containerize.yml@v3.6.0
+    with:
+      docker-image-name: fioneer-starter/frontend
+    secrets: inherit
+
+  sonar-scan:
+    if: github.ref == 'refs/heads/main'
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/node-sonar-scan.yml@v3.6.0
+    secrets: inherit
+
+  snyk-source-scan:
+    if: github.ref == 'refs/heads/main'
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/node-snyk-source-scan.yml@v3.6.0
+    secrets: inherit
+
+  fossa-source-scan:
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/open-source-scan.yml@v3.6.0
+    secrets: inherit
+
+  fossa-container-scan:
+    needs:
+      - build-docker-image
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/container-scan.yml@v3.6.0
+    with:
+      container-image-name: ${{ needs.build-docker-image.outputs.docker-image-name }}
+    secrets: inherit
+
+  deploy-to-aks:
+    if: github.actor != 'dependabot[bot]'
+    needs:
+      - build-docker-image
+    strategy:
+      matrix:
+        include:
+          - environment: aks-dev
+            branch: main
+    concurrency: deploy-to-aks-${{ matrix.environment }}
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/deploy-aks.yml@v3.6.0
+    with:
+      docker-image-name: ${{ needs.build-docker-image.outputs.docker-image-name }}
+      environment: ${{ matrix.environment }}
+      branch: ${{ matrix.branch }}
+      create-db-binding: false
+    secrets: inherit
+
+  deploy-to-kyma:
+    if: github.actor != 'dependabot[bot]'
+    needs:
+      - build-docker-image
+    strategy:
+      matrix:
+        include:
+          - environment: kyma-dev
+            branch: main
+    concurrency: deploy-to-kyma-${{ matrix.environment }}
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/deploy-kyma.yml@v3.6.0
+    with:
+      docker-image-name: ${{ needs.build-docker-image.outputs.docker-image-name }}
+      environment: ${{ matrix.environment }}
+      branch: ${{ matrix.branch }}
+      create-db-binding: false
+    secrets: inherit

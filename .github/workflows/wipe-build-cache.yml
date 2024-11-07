@@ -1,0 +1,20 @@
+name: Wipe build caches
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "List caches only, do not wipe"
+        required: true
+        default: 'false'
+
+jobs:
+  wipe-caches:
+    name: Delete all caches
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Clear caches
+        uses: easimon/wipe-cache@v2
+        with:
+          dry-run: "${{ inputs.dry-run }}"

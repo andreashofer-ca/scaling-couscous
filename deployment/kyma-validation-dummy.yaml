@@ -1,0 +1,12 @@
+service:
+  apiRule:
+    rules:
+      - accessStrategies:
+          - config: {}
+            handler: noop
+        methods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+        path: /.*

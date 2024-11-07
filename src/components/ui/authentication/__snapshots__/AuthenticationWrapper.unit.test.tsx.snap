@@ -1,0 +1,9 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AuthenticationWrapper > when the authentication is in progress 1`] = `
+<div>
+  <div
+    data-testid="PendingScreen"
+  />
+</div>
+`;

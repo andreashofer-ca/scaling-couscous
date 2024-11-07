@@ -1,0 +1,54 @@
+# Service name, used for namespace, deployment, service etc.
+name: fioneer-starter-frontend
+
+# -- deployment specific settings
+deployment:
+  replicaCount: 1
+  # -- readiness probe, not implemented
+  readinessProbe: null
+  livenessProbe:
+    path: /index.html
+    port: http-app
+    initialDelaySeconds: 5
+    failureThreshold: 1
+    periodSeconds: 10
+  resources:
+    limits:
+      memory: 200Mi
+    requests:
+      cpu: 0.2
+      memory: 100Mi
+  securityContext:
+    runAsUser: 101 # This is actually the nginx user (see https://github.com/nginxinc/docker-nginx/blob/4afdc5e1ce43df1e2acba6950f41d28c0ec23768/Dockerfile-alpine.template#L12)
+
+service:
+  istioSettings:
+    gatewayName: website-gateway
+    paths:
+      - name: fioneer-starter-frontend
+        uri:
+          prefix: /
+
+volumes:
+  enable: true
+  runtimeConfig:
+    enable: true
+    mountPath: "/usr/share/nginx/html/config/"
+    fileName: config.json
+    fileContent:
+      baseUrl: "" # required via --set! "https://api.285ca376-31ee-438a-8fee-31f476fda1e3.privatelink.westeurope.azmk8s.io"
+      # -- Active Directory setup
+      oidc:
+        # -- Azure application ID (client) for SSO
+        # REQUIRED on a per env basis
+        clientId: null
+        # -- OIDC provider base URL
+        # REQUIRED on a per env basis, https://login.microsoftonline.com/<AZURE-TENANT-ID>/v2.0
+        authority: null
+        # -- OIDC token scopes
+        # REQUIRED on a per env basis
+        # https://<APPLICATION_ID_URI>/service_api openid profile offline_access
+        scope: null
+
+database:
+  enable: false

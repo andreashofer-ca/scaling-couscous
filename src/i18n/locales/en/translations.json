@@ -1,0 +1,15 @@
+{
+  "app.loading.in-progress": "Loading please wait...",
+  "app.loading.error": "Error loading app config.",
+  "app.welcome-message": "This is the SAP Fioneer starter project for React JS.",
+  "components.authentication.login.button": "Microsoft Login",
+  "components.authentication.login.description": "Click on the button to login to the application using your Microsoft credentials",
+  "components.authentication.login.title": "Authentication",
+  "db-server-info.loading.in-progress": "Loading server info...",
+  "db-server-info.loading.error": "Error loading server info.",
+  "db-server-info.label.version": "DB Version",
+  "db-server-info.label.server-time": "Server Time",
+  "service-api.loading.in-progress": "Loading microservice URL...",
+  "service-api.loading.error": "Error loading microservice URL.",
+  "service-api.label": "Microservice URL"
+}

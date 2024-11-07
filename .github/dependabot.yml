@@ -1,0 +1,21 @@
+version: 2
+registries:
+  fioneer-npm-virtual:
+    type: npm-registry
+    url: https://fioneer.jfrog.io/artifactory/api/npm/fioneer-npm-virtual
+    username: ${{ secrets.ARTIFACTORY_READ_USERNAME }}
+    password: ${{ secrets.ARTIFACTORY_READ_PASSWORD }}
+updates:
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+
+  # Maintain dependencies for npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    registries:
+      - fioneer-npm-virtual
+    schedule:
+      interval: "daily"

@@ -1,0 +1,13 @@
+name: Pull request review
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  review-pull-request:
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/review-pull-request.yml@v3.6.0
+    secrets: inherit
+  sonar-pull-review:
+    uses: Fioneer-Corporate/fioneer-workflows/.github/workflows/node-sonar-scan.yml@v3.6.0
+    secrets: inherit
