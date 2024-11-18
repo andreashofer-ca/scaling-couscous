@@ -1,0 +1,30 @@
+# This workflow will run a Fossa scan and test on your code base. The workflow will fail on Fossa issues that need
+# to be fixed. If run during a pull request, the PR will fail if there are any issues in your code base and not
+# only issues discovered in the pull request.
+# This workflow should be used as gate between a build and a promotion to production.
+# This workflow can also be used to provide information on every push into a releasable branch (e.g., master).
+# This workflow can also be used on a scheduled basis.
+
+name: FOSSA Scan
+
+on: 
+  workflow_call:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  fossa-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+      - name: "Run FOSSA Scan"
+        uses: fossas/fossa-action@v1.4.0
+        with:
+          api-key: ${{secrets.FOSSA_API_KEY}}
+      - name: "Run FOSSA Test"
+        uses: fossas/fossa-action@v1.4.0
+        with:
+          api-key: ${{secrets.FOSSA_API_KEY}}
+          run-tests: true
+          test-diff-revision: ${{ github.event.pull_request.base.sha }}
